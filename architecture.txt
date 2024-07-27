@@ -1,0 +1,80 @@
+Voting Application Architecture and Design
+===========================================
+
+Overview
+--------
+The Voting Application is a simple, in-memory voting system built using Java and Spring Boot. It provides RESTful APIs to manage candidates, cast votes, and retrieve voting results. The application is designed to handle simultaneous requests from multiple users.
+
+Architecture
+------------
+The architecture of the Voting Application follows a layered approach, consisting of the following layers:
+
+1. **Model Layer**: Contains the data model representing the application's core entities.
+2. **Service Layer**: Contains the business logic and handles interactions between the controller and the data model.
+3. **Controller Layer**: Exposes RESTful APIs to the clients and handles HTTP requests and responses.
+
+Components
+----------
+1. **Model Layer**
+   - **Candidate**: This class represents a candidate in the voting system. It contains the candidate's name and vote count. The vote count is initialized to 0 when a candidate is added.
+
+2. **Service Layer**
+   - **VoteService**: This service class contains the business logic for managing candidates and votes. It uses a `ConcurrentHashMap` to store candidates and ensure thread-safety for concurrent access. The class provides methods to add candidates, cast votes, retrieve candidate details, and get the voting results.
+
+3. **Controller Layer**
+   - **VoteController**: This REST controller class exposes the API endpoints for managing candidates and votes. It uses the `VoteService` to handle the business logic and returns appropriate responses to the client.
+
+Design
+------
+1. **Thread-Safety**: The application uses a `ConcurrentHashMap` to store candidate data, ensuring thread-safe operations and allowing simultaneous access by multiple users.
+2. **Separation of Concerns**: The application follows a layered architecture to separate different concerns:
+   - The model layer defines the data structure.
+   - The service layer contains the business logic.
+   - The controller layer handles HTTP requests and responses.
+3. **RESTful API Design**: The API endpoints follow RESTful principles, using appropriate HTTP methods (GET and POST) and returning JSON responses.
+
+API Endpoints
+-------------
+1. **Enter Candidate**
+   - **Endpoint**: `/api/votes/entercandidate`
+   - **Method**: `POST`
+   - **Parameters**: `name` (String) - The name of the candidate
+   - **Description**: Adds a new candidate with an initial vote count of 0.
+
+2. **Cast Vote**
+   - **Endpoint**: `/api/votes/castvote`
+   - **Method**: `POST`
+   - **Parameters**: `name` (String) - The name of the candidate
+   - **Description**: Increments the vote count for the specified candidate.
+
+3. **Count Vote**
+   - **Endpoint**: `/api/votes/countvote`
+   - **Method**: `GET`
+   - **Parameters**: `name` (String) - The name of the candidate
+   - **Description**: Retrieves the current vote count for the specified candidate.
+
+4. **List Votes**
+   - **Endpoint**: `/api/votes/listvote`
+   - **Method**: `GET`
+   - **Description**: Retrieves all candidates and their vote counts.
+
+5. **Get Winner**
+   - **Endpoint**: `/api/votes/getwinner`
+   - **Method**: `GET`
+   - **Description**: Retrieves the candidate with the highest number of votes.
+
+Unit Testing
+------------
+- The application includes unit tests for the `VoteController` class using JUnit and Spring Boot Test.
+- The tests verify the functionality of the API endpoints by mocking the `VoteService` and asserting the expected responses.
+
+Project Structure
+-----------------
+- **model**: Contains the `Candidate` class representing the candidate entity.
+- **service**: Contains the `VoteService` class handling the business logic.
+- **controller**: Contains the `VoteController` class defining the REST API endpoints.
+- **tests**: Contains unit tests for the controller.
+
+Conclusion
+----------
+The Voting Application is a simple yet robust system for managing candidates and votes, designed with a focus on thread-safety, separation of concerns, and adherence to RESTful principles. The in-memory data storage using `ConcurrentHashMap` ensures efficient handling of simultaneous requests, making the application suitable for use in multi-user environments.
